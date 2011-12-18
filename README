@@ -1,0 +1,10 @@
+Erlang program to generate a stat block for some basic OD&D monsters. 
+These stat blocks are meant to be pasted in a quest.
+
+% Expected input:
+%					monster("Kobold", 3).
+%
+% Expected output:
+%					Kobold(3), AC 7, HD 1/2, HP (1, 4, 2), Att 1 weapon, Dmg (Club 1d3-1, Dagger 1d4-1, Dagger 1d4-1), 
+%					Save Normal Man, Morale 6, Treasure (2 cp, 12 cp, 21 cp), XP 5
+%

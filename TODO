@@ -1,0 +1,5 @@
+- Split in several files
+- Correct bug when multiple weapons
+- Add multiple treasures
+- Correct formating
+- Unit tests

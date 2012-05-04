@@ -54,6 +54,13 @@ monster(Name, Number) -> case Name of
 							_ -> 		io:format("Unknown.~n")		
 						 end.
 
+print_monster(Name, Number, AC, HitDice, HpMod, Attacks, WeaponType, Damage, Save, Morale, Treasure, XP)
+				-> io:format("~s(~p), AC ~p, HD ~s~s, HP ~p, Att ~s ~s ~s ~n", 
+							 [Name, Number, AC, HitDice, HpMod, [monster_hp(HitDice, HpMod) || _  <- lists:seq(1, Number)], 
+							 Attacks, Damage, [monsterWeapons:generate_weapon(WeaponType) || _ <- lists:seq(1, Number)]]),
+				   io:format("Save ~s, Morale ~p, Treasure ~s, XP ~p ~n", 
+				   			 [Save, Morale, [monsterTreasures:generate_treasure(Treasure) || _ <- lists:seq(1, Number)], XP]).
+
 monster_hp(0.5) -> random:uniform(round(4));
 monster_hp(HitDice) -> lists:foldl(fun(X, Sum) -> X + Sum end, 0, [random:uniform(round(8)) || _  <- lists:seq(1, HitDice)]).
 monster_hp(HitDice, Modifier) -> monster_hp(HitDice) + Modifier.

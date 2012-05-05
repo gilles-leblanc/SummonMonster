@@ -9,64 +9,42 @@
 %					Save Normal Man, Morale 6, Treasure (2 cp, 12 cp, 21 cp), XP 5
 %
 
-monster(Name, Number) -> case Name of
-							"Bugbear" -> io:format("~s(~p), AC 5, HD 3+1, HP ~p, Att 1 weapon, Dmg ~s +1 ~n", 
-												  [Name, Number, [monster_hp(3, 1) || _  <- lists:seq(1, Number)], 
-												         [monsterWeapons:generate_weapon(large) || _ <- lists:seq(1, Number)]]),
-										io:format("Save Normal Man, Morale 6, Treasure ~s ~s, XP 50 ~n",
-												  [monsterTreasures:generate_treasure(p), monsterTreasures:generate_treasure(q)]);	
-
-							"Kobold" -> io:format("~s(~p), AC 7, HD 1/2, HP ~p, Att 1 weapon, Dmg ~s -1 ~n", 
-												  [Name, Number, [monster_hp(0.5) || _  <- lists:seq(1, Number)], 
-												         [monsterWeapons:generate_weapon(small) || _ <- lists:seq(1, Number)]]),
-										io:format("Save Normal Man, Morale 6, Treasure ~s, XP 5 ~n",
-												  [monsterTreasures:generate_treasure(p)]);			
+monster("Bugbear", Number) -> print_monster("Bugbear", Number, 5, "3 + 1", 3, 1, 
+											"1 weapon", large, "+1", "Normal Man", 6, [p, " ", q], 50);
+														
+monster("Kobold", Number) -> print_monster("Kobold", Number, 7, "1/2", 0.5, 0, 
+										   "1 weapon", small, "-1", "Normal Man", 6, [p], 5);		
 							
-							"Skeleton" -> io:format("~s(~p), AC 7, HD 1, HP ~p, Att 1 weapon, Dmg Claws 1d2 ~n", 
-												  [Name, Number, [monster_hp(1) || _  <- lists:seq(1, Number)]]), 
-										  io:format("Save F1, Morale 12, Treasure ~s, XP 10 ~n",
-												  [monsterTreasures:generate_treasure(nil)]);		
+monster("Skeleton", Number) -> print_monster("Skeleton", Number, 7, "1", 1, 0, 
+											 "Claws", nil, "1d2", "F1", 12, [nil], 10);		
 
-							"Goblin" -> io:format("~s(~p), AC 6, HD 1-1, HP ~p, Att 1 weapon, Dmg ~s ~n", 
-												  [Name, Number, [monster_hp(1, -1) || _  <- lists:seq(1, Number)], 
-												         [monsterWeapons:generate_weapon(small) || _ <- lists:seq(1, Number)]]),
-										io:format("Save Normal Man, Morale 6, Treasure ~s, XP 5 ~n",
-												  [[monsterTreasures:generate_treasure(r) || _ <- lists:seq(1, Number)]]);	
+monster("Goblin", Number) -> print_monster("Goblin", Number, 6, "1 - 1", 1, -1, 
+										   "1 weapon", small, "", "Normal Man", 6, [r], 5);	
 												  
-							"Centaur" -> io:format("~s(~p), AC 5, HD 4, HP ~p, Att 2 hooves / 1 weapon, Dmg 1d6/1d6/by weapon ~s ~n", 
-												  [Name, Number, [monster_hp(4) || _  <- lists:seq(1, Number)], 
-												         [monsterWeapons:generate_weapon(medium) || _ <- lists:seq(1, Number)]]),
-										io:format("Save Normal F4, Morale 8, Treasure ~s, XP 75 ~n",
-												  [monsterTreasures:generate_treasure(nil)]);		
+monster("Centaur", Number) -> print_monster("Centaur", Number, 5, "4", 4, 0, 
+											"2 hooves / 1 weapon", medium, "1d6/1d6/by weapon", "F4", 8, [nil], 75);		
 												  
-							"Neanderthal" -> io:format("~s(~p), AC 8, HD 2, HP ~p, Att 1 weapon ~s ~n", 
-												  [Name, Number, [monster_hp(2) || _  <- lists:seq(1, Number)], 
-												         [monsterWeapons:generate_weapon(primitive) || _ <- lists:seq(1, Number)]]),
-										io:format("Save Normal F2, Morale 8, Treasure ~s, XP 20 ~n",
-												  [monsterTreasures:generate_treasure(nil)]);	
+monster("Neanderthal", Number) -> print_monster("Neanderthal", Number, 8, "2", 2, 0, 
+												"1 weapon", primitive, "", "F2", 8, [nil], 20);	
 												  
-							"Harpy" -> io:format("~s(~p), AC 7, HD 3, HP ~p, Att 3 2 claws / 1 weapon 1d4/1d4/ ~s ~n", 
-												  [Name, Number, [monster_hp(3) || _  <- lists:seq(1, Number)], 
-												         [monsterWeapons:generate_weapon(medium) || _ <- lists:seq(1, Number)]]),
-										io:format("Save Normal F2, Morale 8, Treasure ~s, XP 20 ~n",
-												  [monsterTreasures:generate_treasure(nil)]);			
+monster("Harpy", Number) -> print_monster("Harpy", Number, 7, "3", 3, 0, 
+										  "2 claws / 1 weapon", medium, "1d4/1d4/", "F2", 8, [nil], 20);			
 							
-							_ -> 		io:format("Unknown.~n")		
-						 end.
+monster(_, _) -> io:format("Unknown.~n").		
 
-print_monster(Name, Number, AC, HitDice, HpMod, Attacks, WeaponType, Damage, Save, Morale, Treasure, XP)
-				-> io:format("~s(~p), AC ~p, HD ~s~s, HP ~p, Att ~s ~s ~s ~n", 
-							 [Name, Number, AC, HitDice, HpMod, [monster_hp(HitDice, HpMod) || _  <- lists:seq(1, Number)], 
+
+print_monster(Name, Number, AC, HdText, HitDice, HpMod, Attacks, WeaponType, Damage, Save, Morale, Treasure, XP)
+				-> io:format("~s(~p), AC ~p, HD ~s, HP ~p, Att ~s Dmg ~s ~s ~n", 
+							 [Name, Number, AC, HdText, [monster_hp(HitDice, HpMod) || _  <- lists:seq(1, Number)], 
 							 Attacks, Damage, [monsterWeapons:generate_weapon(WeaponType) || _ <- lists:seq(1, Number)]]),
 				   io:format("Save ~s, Morale ~p, Treasure ~s, XP ~p ~n", 
-				   			 [Save, Morale, [monsterTreasures:generate_treasure(Treasure) || _ <- lists:seq(1, Number)], XP]).
+				   			 [Save, Morale, generate_treasure(Treasure, Number), XP]).
+
 
 monster_hp(0.5) -> random:uniform(round(4));
 monster_hp(HitDice) -> lists:foldl(fun(X, Sum) -> X + Sum end, 0, [random:uniform(round(8)) || _  <- lists:seq(1, HitDice)]).
 monster_hp(HitDice, Modifier) -> monster_hp(HitDice) + Modifier.
 				       
-
-							
-						
-
-							   
+generate_treasure([nil], _) -> monsterTreasures:generate_treasure(nil);
+generate_treasure(Treasure, Number) -> [lists:map(fun(X) -> monsterTreasures:generate_treasure(X) end, Treasure) 
+				   			 				 || _ <- lists:seq(1, Number)].
